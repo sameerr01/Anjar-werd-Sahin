@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anjar Weds Sahin | Royal Interactive Wedding Card</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Cinzel:wght@500;700;900&family=Amiri:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold-1: #fff2a8;
+    --gold-2: #ffd700;
+    --gold-3: #c18a08;
+    --gold-4: #76500b;
+    --ruby-1: #ffaaaa;
+    --ruby-2: #ff4242;
+    --ruby-3: #a50000;
+    --ruby-4: #570000;
+    --bg-dark: #070100;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { min-height:100%; overflow-x:hidden; }
+  
+  body {
+    min-height: 100vh;
+    padding: 40px 15px 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: 
+      radial-gradient(circle at 50% 0%, rgba(255,215,0,0.25), transparent 35%),
+      radial-gradient(circle at 0% 50%, rgba(139,0,0,0.45), transparent 45%),
+      radial-gradient(circle at 100% 50%, rgba(139,0,0,0.45), transparent 45%),
+      linear-gradient(180deg, var(--bg-dark), #1d0300 50%, #080100);
+    font-family: 'Poppins', sans-serif;
+    perspective: 2000px;
+  }
+
+  /* Canvas Particle Overlay */
+  #fxCanvas {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Audio Floating Control Button */
+  .audio-control {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 999;
+    background: rgba(20, 5, 2, 0.75);
+    border: 1px solid var(--gold-2);
+    color: var(--gold-2);
+    padding: 10px 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5), 0 0 10px rgba(255,215,0,0.3);
+    transition: all 0.3s ease;
+  }
+  .audio-control:hover {
+    transform: scale(1.05);
+    background: rgba(139,0,0,0.8);
+    box-shadow: 0 0 20px rgba(255,215,0,0.6);
+  }
+
+  /* Crescent Moon */
+  .moon {
+    position: fixed;
+    top: 20px; right: 25px;
+    font-size: 42px;
+    z-index: 2;
+    animation: moonGlow 4s ease-in-out infinite alternate, moonFloat 6s ease-in-out infinite;
+    filter: drop-shadow(0 0 18px rgba(255,225,120,0.95));
+  }
+  @keyframes moonGlow {
+    from { filter: drop-shadow(0 0 10px rgba(255,225,120,0.6)); }
+    to { filter: drop-shadow(0 0 32px rgba(255,235,150,1)); }
+  }
+  @keyframes moonFloat {
+    0%,100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+  }
+
+  /* Intro Golden Flash */
+  .intro-light {
+    position: fixed; inset:0; z-index: 100; pointer-events:none;
+    background: radial-gradient(circle at center, rgba(255,225,100,0.95), rgba(255,180,0,0.3) 25%, transparent 60%);
+    animation: introLight 2s ease-out forwards;
+  }
+  @keyframes introLight {
+    0% { opacity:1; transform:scale(0.1); }
+    50% { opacity:0.85; transform:scale(1.2); }
+    100% { opacity:0; transform:scale(2.2); }
+  }
+
+  /* Card Stage & 3D Parallax Wrapper */
+  .card-stage {
+    width: 100%;
+    max-width: 530px;
+    position: relative;
+    z-index: 10;
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out;
+  }
+
+  /* Royal Card Main Frame */
+  .card {
+    position: relative;
+    padding: 10px;
+    border-radius: 28px;
+    background: linear-gradient(135deg, #ffe797 0%, #9c6a0c 20%, #f7d45d 40%, #815507 65%, #d6a82d 85%, #ffe99c 100%);
+    box-shadow:
+      0 0 0 2px #5a3905,
+      0 0 0 5px #d4af37,
+      0 0 0 9px #704b08,
+      0 0 50px rgba(255,215,0,0.6),
+      0 30px 90px rgba(0,0,0,0.9);
+    transform-style: preserve-3d;
+    animation: cardEntrance 2.2s cubic-bezier(.16,1.25,.3,1) forwards;
+  }
+
+  @keyframes cardEntrance {
+    0% { opacity:0; transform: rotateY(-100deg) rotateX(25deg) scale(0.5); filter: blur(10px) brightness(2); }
+    70% { transform: rotateY(12deg) rotateX(-5deg) scale(1.02); filter: blur(0) brightness(1.1); }
+    100% { opacity:1; transform: rotateY(0) rotateX(0) scale(1); filter: brightness(1); }
+  }
+
+  /* Inner Content Canvas */
+  .card-content {
+    position: relative;
+    overflow: hidden;
+    padding: 50px 30px 55px;
+    border: 2px solid #d4af37;
+    border-radius: 20px;
+    text-align: center;
+    background: radial-gradient(ellipse at 50% 0%, #ffffff 0%, #fcf6e8 40%, #f4e4c1 80%, #ebd39f 100%);
+    box-shadow: inset 0 0 60px rgba(110,70,5,0.18);
+  }
+
+  /* Dynamic Shimmer Light Sweep */
+  .card-content::before {
+    content:""; position: absolute;
+    top: -150%; left: -80%;
+    width: 50%; height: 400%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
+    transform: rotate(25deg);
+    pointer-events: none;
+    animation: lightSweep 6s 3s ease-in-out infinite;
+  }
+  @keyframes lightSweep {
+    0% { left: -80%; }
+    30%, 100% { left: 140%; }
+  }
+
+  /* Ornamental Corners */
+  .corner-frame {
+    position: absolute;
+    width: 60px; height: 60px;
+    border: 2px solid #b8860b;
+    opacity: 0.85;
+    transition: all 0.3s;
+  }
+  .tl { top: 12px; left: 12px; border-right: none; border-bottom: none; border-radius: 14px 0 0 0; }
+  .tr { top: 12px; right: 12px; border-left: none; border-bottom: none; border-radius: 0 14px 0 0; }
+  .bl { bottom: 12px; left: 12px; border-right: none; border-top: none; border-radius: 0 0 0 14px; }
+  .br { bottom: 12px; right: 12px; border-left: none; border-top: none; border-radius: 0 0 14px 0; }
+
+  /* Bismillah */
+  .bismillah {
+    font-family: 'Amiri', serif;
+    font-size: 26px;
+    line-height: 1.8;
+    color: #8b0000;
+    opacity: 0;
+    animation: fadeInDown 1s 1.8s forwards;
+    text-shadow: 0 1px 2px rgba(139,0,0,0.15);
+  }
+
+  /* Decorative Crest Top */
+  .ornament-top {
+    display: inline-block;
+    margin: 6px 0;
+    color: #b8860b;
+    font-size: 32px;
+    opacity: 0;
+    animation: zoomIn 1s 2.1s forwards, pulseGlow 3s infinite alternate;
+  }
+  @keyframes pulseGlow {
+    from { filter: drop-shadow(0 0 2px rgba(212,175,55,0.4)); }
+    to { filter: drop-shadow(0 0 12px rgba(255,215,0,0.9)); }
+  }
+
+  /* Invited Text */
+  .invited {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 5px;
+    color: #5c3818;
+    margin-top: 5px;
+    opacity: 0;
+    animation: fadeIn 1s 2.4s forwards;
+  }
+
+  /* Divider */
+  .divider {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    margin: 15px 0;
+    opacity: 0;
+    animation: fadeIn 1s 2.6s forwards;
+  }
+  .divider .line {
+    width: 80px; height: 1px;
+    background: linear-gradient(90deg, transparent, #d4af37, transparent);
+  }
+  .diamond { color: #b8860b; font-size: 10px; transform: rotate(45deg); }
+
+  /* Names Styling with Gradient & Glow */
+  .name-block { margin: 10px 0; }
+  .name {
+    font-family: 'Dancing Script', cursive;
+    font-size: 76px;
+    font-weight: 700;
+    line-height: 1.1;
+    display: inline-block;
+    opacity: 0;
+  }
+  .name.anjar {
+    background: linear-gradient(180deg, var(--gold-1) 0%, var(--gold-2) 30%, var(--gold-3) 65%, var(--gold-4) 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: nameEnter 1.4s 2.8s cubic-bezier(.16,1.4,.3,1) forwards, goldGlow 4s 4.5s infinite ease-in-out;
+  }
+  .name.sahin {
+    background: linear-gradient(180deg, var(--ruby-1) 0%, var(--ruby-2) 30%, var(--ruby-3) 65%, var(--ruby-4) 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: nameEnter 1.4s 3.4s cubic-bezier(.16,1.4,.3,1) forwards, redGlow 4s 5s infinite ease-in-out;
+  }
+
+  @keyframes nameEnter {
+    0% { opacity:0; transform: translateY(35px) scale(0.4) rotate(-5deg); filter: blur(8px); }
+    100% { opacity:1; transform: translateY(0) scale(1) rotate(0); filter: blur(0); }
+  }
+  @keyframes goldGlow {
+    0%,100% { filter: drop-shadow(0 3px 5px rgba(90,60,5,0.3)); }
+    50% { filter: drop-shadow(0 4px 18px rgba(255,215,0,0.85)); }
+  }
+  @keyframes redGlow {
+    0%,100% { filter: drop-shadow(0 3px 5px rgba(90,0,0,0.3)); }
+    50% { filter: drop-shadow(0 4px 18px rgba(255,60,60,0.85)); }
+  }
+
+  /* Heart & Wed Ring Animation */
+  .weds {
+    display: flex; align-items: center; justify-content: center; gap: 15px;
+    margin: 5px 0 10px;
+    opacity: 0;
+    animation: fadeIn 1s 3.1s forwards;
+  }
+  .weds .line { width: 60px; height: 1px; background: linear-gradient(90deg, transparent, #b8860b, transparent); }
+  .heart-ring {
+    font-size: 24px;
+    color: #8b0000;
+    display: inline-block;
+    animation: pulseHeart 1.4s 3.5s ease-in-out infinite;
+  }
+  @keyframes pulseHeart {
+    0%, 100% { transform: scale(1); }
+    15% { transform: scale(1.3); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.15); }
+  }
+
+  /* Urdu Calligraphy Quote */
+  .urdu-line {
+    direction: rtl;
+    font-family: 'Noto Nastaliq Urdu', serif;
+    font-size: 18px;
+    line-height: 2.3;
+    color: #5c3818;
+    margin: 15px 0;
+    opacity: 0;
+    animation: fadeInUp 1s 3.8s forwards;
+  }
+
+  /* Interactive Info Section */
+  .info-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 15px;
+    opacity: 0;
+    animation: fadeInUp 1s 4.1s forwards;
+  }
+  .info-row {
+    display: grid;
+    grid-template-columns: 35px 70px 1fr;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.4);
+    border: 1px solid rgba(212,175,55,0.25);
+    transition: all 0.3s ease;
+  }
+  .info-row:hover {
+    background: rgba(255,255,255,0.85);
+    border-color: #d4af37;
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(184,134,11,0.15);
+  }
+  .info-row .icon { font-size: 20px; }
+  .info-label { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1px; color: #8b6914; font-weight: 700; text-align: right; }
+  .info-value { font-family: 'Playfair Display', serif; font-size: 16px; color: #3d1e0d; font-weight: 600; text-align: left; line-height: 1.3; }
+
+  /* Urdu Footer Message */
+  .footer-urdu {
+    direction: rtl;
+    font-family: 'Noto Nastaliq Urdu', serif;
+    font-size: 16px;
+    color: #8b0000;
+    line-height: 2.2;
+    margin-top: 20px;
+    opacity: 0;
+    animation: fadeInUp 1s 4.4s forwards;
+  }
+
+  /* Interactive Action Buttons (RSVP & Map) */
+  .action-btns {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 25px;
+    opacity: 0;
+    animation: fadeInUp 1s 4.7s forwards;
+  }
+  .btn {
+    background: linear-gradient(135deg, #8b0000 0%, #4a0000 100%);
+    color: #ffd700;
+    border: 1px solid #d4af37;
+    padding: 10px 20px;
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn:hover {
+    transform: translateY(-3px) scale(1.03);
+    background: linear-gradient(135deg, #a50000 0%, #600000 100%);
+    box-shadow: 0 6px 20px rgba(255,215,0,0.4);
+  }
+
+  /* Enhanced Royal Animation for RSVP Modal Popup */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    display: flex; justify-content: center; align-items: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  .modal-overlay.active { opacity: 1; pointer-events: auto; }
+  .modal-box {
+    background: linear-gradient(135deg, #fffdf0, #f8edcf);
+    border: 3px solid #d4af37;
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%; max-width: 400px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 30px rgba(212,175,55,0.5);
+    transform: scale(0.5) rotate(-10deg);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .modal-overlay.active .modal-box {
+    transform: scale(1) rotate(0deg);
+  }
+  .modal-box h3 { font-family: 'Cinzel', serif; color: #8b0000; margin-bottom: 12px; font-size: 20px; }
+  .modal-box p { font-size: 14px; color: #4a2511; margin-bottom: 22px; line-height: 1.5; }
+  .close-btn {
+    background: linear-gradient(135deg, #8b0000, #4a0000);
+    color: #ffd700;
+    border: 1px solid #d4af37;
+    padding: 10px 22px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    transition: all 0.3s ease;
+  }
+  .close-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(212,175,55,0.6);
+  }
+
+  /* Animations Utility */
+  @keyframes fadeIn { to { opacity: 1; } }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes zoomIn { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
+
+  /* Responsive Adjustments */
+  @media(max-width: 540px) {
+    body { padding: 20px 10px 40px; }
+    .name { font-size: 58px; }
+    .card-content { padding: 35px 16px 40px; }
+    .bismillah { font-size: 20px; }
+    .info-row { grid-template-columns: 28px 60px 1fr; font-size: 14px; }
+    .info-value { font-size: 14px; }
+    .action-btns { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Audio Background Controls -->
+  <button class="audio-control" id="audioToggle">
+    <span id="audioIcon">🎵</span> <span id="audioText">Play Music</span>
+  </button>
+  <audio id="bgMusic" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=arabic-oriental-background-112349.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Sky Particle Canvas Overlay -->
+  <canvas id="fxCanvas"></canvas>
+
+  <!-- Intro Flash FX -->
+  <div class="intro-light"></div>
+
+  <!-- Decorative Crescent Moon -->
+  <div class="moon">🌙</div>
+
+  <!-- Card 3D Perspective Stage -->
+  <div class="card-stage" id="cardStage">
+    <div class="card">
+      <div class="card-content">
+        
+        <!-- Corner Frame Borders -->
+        <div class="corner-frame tl"></div>
+        <div class="corner-frame tr"></div>
+        <div class="corner-frame bl"></div>
+        <div class="corner-frame br"></div>
+
+        <!-- Bismillah Header -->
+        <div class="bismillah">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
+        
+        <div class="ornament-top">⚜️</div>
+
+        <!-- Royal Invitation Tagline -->
+        <div class="invited">YOU ARE CORDIALLY INVITED TO THE RECEPTION OF</div>
+
+        <div class="divider">
+          <div class="line"></div>
+          <div class="diamond">◆</div>
+          <div class="line"></div>
+        </div>
+
+        <!-- Bride & Groom Names -->
+        <div class="name-block">
+          <div class="name anjar">Anjar</div>
+          <br>
+          <div class="weds">
+            <div class="line"></div>
+            <div class="heart-ring">💖</div>
+            <div class="line"></div>
+          </div>
+          <div class="name sahin">Sahin</div>
+        </div>
+
+        <!-- Urdu Blessing -->
+        <div class="urdu-line">
+          "اور ہم نے تمہارے درمیان محبت اور رحم پیدا کر دیا"
+        </div>
+
+        <!-- Event Details Matrix -->
+        <div class="info-grid">
+          <div class="info-row">
+            <span class="icon">📅</span>
+            <span class="info-label">DATE:</span>
+            <span class="info-value">17 NOVEMBER</span>
+          </div>
+          <div class="info-row">
+            <span class="icon">⏰</span>
+            <span class="info-label">TIME:</span>
+            <span class="info-value">6 PM</span>
+          </div>
+          <div class="info-row">
+            <span class="icon">📍</span>
+            <span class="info-label">VENUE:</span>
+            <span class="info-value">Vivah samaroh marriage hall,<br><small style="font-size:12px; color:#6b4423;">near union Bank Dharampur Samastipur</small></span>
+          </div>
+        </div>
+
+        <!-- Urdu Footer Message -->
+        <div class="footer-urdu">
+          آپ کی شمولیت ہمارے لیے باعثِ مسرت اور برکت ہوگی
+        </div>
+
+        <!-- Interactive Action Buttons -->
+        <div class="action-btns">
+          <button class="btn" onclick="openModal()">✨ RSVP Request</button>
+          <a href="https://www.google.com/maps/search/?api=1&query=Vivah+samaroh+marriage+hall+near+union+Bank+Dharampur+Samastipur" target="_blank" class="btn">🗺️ View Location</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- RSVP Modal Popup -->
+  <div class="modal-overlay" id="rsvpModal">
+    <div class="modal-box">
+      <h3>✨ RSVP Confirmation</h3>
+      <p>Thank you for wishing to join our special day! We look forward to welcoming you.</p>
+      <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+<script>
+  /* Audio Controller */
+  const audio = document.getElementById('bgMusic');
+  const audioBtn = document.getElementById('audioToggle');
+  const audioIcon = document.getElementById('audioIcon');
+  const audioText = document.getElementById('audioText');
+
+  audioBtn.addEventListener('click', () => {
+    if (audio.paused) {
+      audio.play();
+      audioIcon.textContent = '🔊';
+      audioText.textContent = 'Pause Music';
+    } else {
+      audio.pause();
+      audioIcon.textContent = '🎵';
+      audioText.textContent = 'Play Music';
+    }
+  });
+
+  /* RSVP Modal Functions */
+  function openModal() {
+    document.getElementById('rsvpModal').classList.add('active');
+  }
+  function closeModal() {
+    document.getElementById('rsvpModal').classList.remove('active');
+  }
+
+  /* 3D Tilt Parallax Effect on Mouse/Touch Move */
+  const stage = document.getElementById('cardStage');
+  document.addEventListener('mousemove', (e) => {
+    const x = (window.innerWidth / 2 - e.pageX) / 25;
+    const y = (window.innerHeight / 2 - e.pageY) / 25;
+    stage.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
+  });
+
+  /* Dynamic Canvas Particle System (Golden Dust & Stars) */
+  const canvas = document.getElementById('fxCanvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  class Particle {
+    constructor() {
+      this.reset();
+    }
+    reset() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 2.5 + 0.5;
+      this.speedY = Math.random() * 0.8 + 0.2;
+      this.speedX = (Math.random() - 0.5) * 0.5;
+      this.opacity = Math.random();
+      this.fadeSpeed = Math.random() * 0.01 + 0.005;
+    }
+    update() {
+      this.y -= this.speedY;
+      this.x += this.speedX;
+      this.opacity -= this.fadeSpeed;
+      if (this.y < 0 || this.opacity <= 0) {
+        this.reset();
+        this.y = canvas.height + 10;
+      }
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 215, 0, ${this.opacity})`;
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = '#ffd700';
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < 60; i++) {
+    particles.push(new Particle());
+  }
+
+  function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    requestAnimationFrame(animateParticles);
+  }
+  animateParticles();
+</script>
+</body>
+</html>
